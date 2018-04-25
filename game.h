@@ -18,7 +18,7 @@ public:
   ~Game();
   virtual void setup() override;
   virtual void reset() override;
-  void play();
+  void run();
   void newGame();
   void test();
 

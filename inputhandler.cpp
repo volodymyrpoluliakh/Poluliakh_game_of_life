@@ -33,9 +33,7 @@ bool InputHandler::handleTap(){
 
 void InputHandler::handlePause() {
   while (true) {
-      char tmp = _getch();
-      std::cout << "\n tmp: " << tmp << '\n';
-      switch (tmp) {
+      switch (_getch()) {
         case 'g':
         case 'G':
           m_state = GAME;

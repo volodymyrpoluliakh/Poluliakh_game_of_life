@@ -3,7 +3,7 @@
 int main()
 {
   Game g;
-  g.play();
+  g.run();
 
   return 0;
 }

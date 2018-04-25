@@ -1,5 +1,6 @@
 #include "game.h"
 #include "bitcounters.h"
+#include "common.h"
 
 Game::Game()
   : Grid(),
@@ -15,7 +16,7 @@ void Game::reset() {
   std::fill((*m_cellTable2).begin(), (*m_cellTable2).end(), 0);
 }
 
-void Game::play() {
+void Game::run() {
   while(m_state != EXIT) {
       m_isStateChanged = false;
       switch (m_state) {
@@ -32,6 +33,7 @@ void Game::play() {
           break;
         }
     }
+  std::cout << THANKS;
   return;
 }
 
@@ -44,9 +46,10 @@ void Game::setup() {
 void Game::newGame() {
   system("cls");
   m_isStateChanged = false;
-  reset();
   std::cout << INFO_STR << '\n';
   std::cout << NEW_GAME_STR;
+
+  reset();
   Grid::init();
   adjustCellTable();
   while (m_state == GAME) {
@@ -67,24 +70,16 @@ void Game::test() {
   system("cls");
   std::cout << INFO_STR;
   bool result;
-  reset();
+
   //test of countPopulation() and adjustCellTable() (empty array)
-  m_gridTable = []() -> def_arr_t {
-      def_arr_t arr;
-      std::string str("");
-      for (int i = 0; i < DEFAULT_WIDTH; i++) str += DOT;
-      for (auto&& it : arr) {
-          it = str;
-        }
-      return arr;
-    }();
+  reset();
   adjustCellTable();
   countPopulation();
   result = (m_n == 0);
   std::cout << "Result of testing empty array: " << result << '\n';
-  reset();
 
   //test of countPopulation(), adjustCellTable() and update() (10 alive cells)
+  reset();
   srand(clock());
   std::vector<int> vecRand;
   int buf;
@@ -103,9 +98,7 @@ void Game::test() {
   std::cout << "Result of testing array with 10 alive cells: " << result << '\n';
 
   //test of countPopulation() and adjustCellTable() (full array)
-  std::string fullStr("");
-  for (int i = 0; i < DEFAULT_WIDTH; i++) fullStr += SHARP;
-  for (auto&& it : m_gridTable) it = fullStr;
+  m_gridTable = DEFAULT_FULL_ARRAY();
   adjustCellTable();
   countPopulation();
   result = (m_n == DEFAULT_HEIGHT * DEFAULT_WIDTH);
@@ -303,12 +296,8 @@ void Game::countPopulation() {
 
 void Game::update() {
   std::vector<int>* arrVecDeltas = new std::vector<int> [DEFAULT_HEIGHT]{};
-//  for (int i = 0; i < 65 ; i++) {
-//      findRowDelta(i, &arrVecDeltas[i]);
-//      Grid::update(arrVecDeltas[i]);
-//    }
 
-    for (int i = 0; i < DEFAULT_HEIGHT / 5; i++) {
+  for (int i = 0; i < DEFAULT_HEIGHT / 5; i++) {
       std::thread t1(&findRowDelta, this, i, &arrVecDeltas[i]);
       std::thread t2(&findRowDelta, this, i + 13, &arrVecDeltas[i + 13]);
       std::thread t3(&findRowDelta, this, i + 26, &arrVecDeltas[i + 26]);
@@ -339,70 +328,3 @@ void Game::update() {
   std::fill((*m_cellTable2).begin(), (*m_cellTable2).end(), 0);
   delete [] arrVecDeltas;
 }
-
-//void Game::loadedGame() {
-//  load();
-//  m_previousState = m_state;
-
-//}
-
-//void Game::verify() {
-//  //first part of verification
-//  //checking number of population
-
-//  for (auto&& it : m_gridTable) {
-//      for (auto&& jt : it) {
-
-//        }
-//    }
-//  int row = 0, column = 0;
-//  for (auto&& it : m_gridTable) {
-//      uint64_t& firstUintRow = (*m_cellTable1)[row * 2];
-//      uint64_t& secondUintRow = (*m_cellTable1)[row * 2+1];
-//      for ()
-//    }
-//}
-
-//void Game::save() {
-//  printToFile(SAVE_FILE);
-//  std::ofstream out;
-//  out.open(SAVE_FILE, std::ios::app);
-
-//  for (auto&& it : (*m_cellTable1)) {
-//      out << it << '\n';
-//    }
-
-//  out.close();
-//  m_state = m_previousState;
-//}
-
-//bool Game::load() {
-//  m_state = LOAD;
-//  m_isStateChanged = true;
-//  m_gridTable = DEFAULT_ARRAY();
-//  std::fill((*m_cellTable2).begin(), (*m_cellTable2).end(), 0);
-//  std::fill((*m_cellTable2).begin(), (*m_cellTable2).end(), 0);
-
-//  std::ifstream in;
-//  in.open(SAVE_FILE);
-//  if (!in.is_open()) {
-//      std::cout << LOAD_FAIL_STR;
-//      m_state = GAME;
-//      return false;
-//    }
-
-//  readFromFile(SAVE_FILE);
-//  std::string buf;
-//  for (auto&& it : (*m_cellTable1)) {
-//      std::getline(in, buf);
-//      for (auto&& jt : buf) {
-//          if (!isdigit(jt)) {
-//              std::cout << LOAD_FAIL_STR;
-//              m_state = GAME;
-//              return false;
-//            }
-//        }
-//      it = std::stoull(buf);
-//    }
-//  return true;
-//}

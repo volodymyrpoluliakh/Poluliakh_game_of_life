@@ -6,7 +6,9 @@ Grid::Grid():
   InputHandler(),
   m_n(0),
   m_generation(0),
-  m_gridTable(DEFAULT_ARRAY())
+  m_gridTable([]() -> def_arr_t {
+             return DEFAULT_ARRAY();
+              }())
 {}
 
 Grid::~Grid() {}
@@ -35,9 +37,11 @@ bool Grid::printToFile(std::string pathToFile) {
       std::cout << "file " << pathToFile << " hadn`t been opened\n";
       return false;
     }
+
   for (auto&& it : m_gridTable) {
       out << it << '\n';
     }
+
   out.close();
   return true;
 }

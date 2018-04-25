@@ -3,6 +3,7 @@
 
 #include "constants.h"
 #include "inputhandler.h"
+#include "common.h"
 
 #include <cstdint>
 #include <fstream>
